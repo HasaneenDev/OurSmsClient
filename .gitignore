@@ -229,3 +229,7 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+.idea/.idea.AppOurSms.dir/.idea/vcs.xml
+.idea/.idea.AppOurSms.dir/.idea/indexLayout.xml
+.idea/.idea.AppOurSms.dir/.idea/encodings.xml
+.idea/.idea.AppOurSms.dir/.idea/.name
