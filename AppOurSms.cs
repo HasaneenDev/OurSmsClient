@@ -1,24 +1,40 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.IO;
 using System.Net;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AppOurSms
 {
-    public class OurSmsClient
+
+    public static class ServiceCollectionExtension
     {
-        int userId;
-        string key;
-        string baseUri = "https://oursms.app";
+        public static void AddOurSms(this IServiceCollection service,int userId,string key)
+        {
+            service.AddSingleton<IOurSmsClient>(new OurSmsClient(userId, key));
+        }
+    }
+
+    public interface IOurSmsClient
+    {
+        object SendOtp(string phoneNumber, string otp);
+        object SendOneMessage(string phoneNumber, string message);
+        object MessageStatus(string messageId);
+    }
+    public class OurSmsClient:IOurSmsClient
+    {
+        private readonly int _userId;
+        private readonly string _key;
+        private const string BaseUri = "https://oursms.app";
+
         public OurSmsClient(int userId, string key)
         {
-            this.userId = userId;
-            this.key = key;
+            _userId = userId;
+            _key = key;
         }
         public object SendOtp(string phoneNumber, string otp)
         {
             object result;
-            string url = baseUri + "/api/v1/SMS/Add/SendOtpSms";
+            const string url = BaseUri + "/api/v1/SMS/Add/SendOtpSms";
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.ContentType = "application/json";
             request.Method = "POST";
@@ -26,8 +42,8 @@ namespace AppOurSms
             {
                 var json = JsonConvert.SerializeObject(new
                 {
-                    userId = userId,
-                    key = key,
+                    userId = _userId,
+                    key = _key,
                     phoneNumber = phoneNumber,
                     otp = otp
                 });
@@ -44,7 +60,7 @@ namespace AppOurSms
         public object SendOneMessage(string phoneNumber, string message)
         {
             object result;
-            string url = baseUri + "/api/v1/SMS/Add/SendOneSms";
+            const string url = BaseUri + "/api/v1/SMS/Add/SendOneSms";
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.ContentType = "application/json";
             request.Method = "POST";
@@ -52,8 +68,8 @@ namespace AppOurSms
             {
                 var json = JsonConvert.SerializeObject(new
                 {
-                    userId = userId,
-                    key = key,
+                    userId = _userId,
+                    key = _key,
                     phoneNumber = phoneNumber,
                     Message = message
                 });
@@ -70,7 +86,7 @@ namespace AppOurSms
         public object MessageStatus(string messageId)
         {
             object result;
-            string url = baseUri + "/api/v1/SMS/Get/GetStatus/" + messageId;
+            var url = BaseUri + "/api/v1/SMS/Get/GetStatus/" + messageId;
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.ContentType = "application/json";
             request.Method = "GET";
