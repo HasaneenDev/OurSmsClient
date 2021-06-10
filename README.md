@@ -1,7 +1,7 @@
 # OurSmsClient
 
 > package for our sms api
-- [oursms](https:oursms.app)
+- [oursms](https://oursms.app/)
 
 ## Installation
 dotnet add package OurSmsClient --version 1.0.1
